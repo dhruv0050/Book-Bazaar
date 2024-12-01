@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useForm } from "react-hook-form"
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useCreateOrderMutation } from '../../app/features/orders/ordersApi';
 import Swal from 'sweetalert2';
+import { useCreateOrderMutation } from '../../app/features/orders/ordersApi';
 
 const CheckoutPage = () => {
     const cartItems = useSelector(state => state.cart.cartItems);
@@ -17,10 +17,12 @@ const CheckoutPage = () => {
         formState: { errors },
     } = useForm()
 
-    const [createOrder, { isLoading , error }] = useCreateOrderMutation();
+    const [createOrder, {isLoading, error}] = useCreateOrderMutation();
+    const navigate = useNavigate()
+
     const [isChecked, setIsChecked] = useState(false)
     const onSubmit = async (data) => {
-
+        
         const newOrder = {
             name: data.name,
             email: currentUser?.email,
@@ -36,45 +38,22 @@ const CheckoutPage = () => {
             totalPrice: totalPrice,
         }
         try {
-            await createOrder(newOrder).unwrap()
-            const swalWithBootstrapButtons = Swal.mixin({
-                customClass: {
-                    confirmButton: "btn btn-success",
-                    cancelButton: "btn btn-danger"
-                },
-                buttonsStyling: false
-            });
-            swalWithBootstrapButtons.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
+            await createOrder(newOrder).unwrap();
+            Swal.fire({
+                title: "Confirm Order",
+                text: "Your order placed successfully!",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: "Place Order!",
-                cancelButtonText: "No, cancel!",
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    swalWithBootstrapButtons.fire({
-                        title: "Order Placed",
-                        text: "Order Placed Successfully",
-                        icon: "success"
-                    });
-                } else if (
-                    /* Read more about handling dismissals below */
-                    result.dismiss === Swal.DismissReason.cancel
-                ) {
-                    swalWithBootstrapButtons.fire({
-                        title: "Cancelled",
-                        text: "Your Order has been cancelled)",
-                        icon: "error"
-                    });
-                }
-            });
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Place my order"
+              });
+              navigate("/orders")
         } catch (error) {
-            console.error("Error Ocurred!!", error)
+            console.error("Error place an order", error);
+            alert("Failed to place an order")
         }
     }
-
     if (isLoading) return <div>Loading</div>
     return (
         <section>
@@ -82,7 +61,7 @@ const CheckoutPage = () => {
                 <div className="container max-w-screen-lg mx-auto">
                     <div>
                         <div>
-                            <h2 className="font-semibold text-xl text-gray-600 mb-2">Cash On Delevary</h2>
+                            <h2 className="font-semibold text-xl text-gray-600 mb-2">Cash On Delivery</h2>
                             <p className="text-gray-500 mb-2">Total Price: ${totalPrice}</p>
                             <p className="text-gray-500 mb-6">Items: {cartItems.length > 0 ? cartItems.length : 0}</p>
                         </div>
