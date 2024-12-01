@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useForm } from "react-hook-form"
 import { Link } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import { useAuth } from '../../context/AuthContext';
-// import { useCreateOrderMutation } from '../../app/features/orders/ordersApi';
+import { useCreateOrderMutation } from '../../app/features/orders/ordersApi';
+import Swal from 'sweetalert2';
 
 const CheckoutPage = () => {
     const cartItems = useSelector(state => state.cart.cartItems);
     const totalPrice = cartItems.reduce((acc, item) => acc + item.newPrice, 0).toFixed(2);
-    const {currentUser} = useAuth()
+    const { currentUser } = useAuth()
     const {
         register,
         handleSubmit,
@@ -17,6 +17,7 @@ const CheckoutPage = () => {
         formState: { errors },
     } = useForm()
 
+    const [createOrder, { isLoading , error }] = useCreateOrderMutation();
     const [isChecked, setIsChecked] = useState(false)
     const onSubmit = async (data) => {
 
@@ -34,8 +35,47 @@ const CheckoutPage = () => {
             productIds: cartItems.map(item => item?._id),
             totalPrice: totalPrice,
         }
+        try {
+            await createOrder(newOrder).unwrap()
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: "btn btn-danger"
+                },
+                buttonsStyling: false
+            });
+            swalWithBootstrapButtons.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Place Order!",
+                cancelButtonText: "No, cancel!",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    swalWithBootstrapButtons.fire({
+                        title: "Order Placed",
+                        text: "Order Placed Successfully",
+                        icon: "success"
+                    });
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire({
+                        title: "Cancelled",
+                        text: "Your Order has been cancelled)",
+                        icon: "error"
+                    });
+                }
+            });
+        } catch (error) {
+            console.error("Error Ocurred!!", error)
+        }
     }
 
+    if (isLoading) return <div>Loading</div>
     return (
         <section>
             <div className="min-h-screen p-6 bg-gray-100 flex items-center justify-center">
