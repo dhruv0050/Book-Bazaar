@@ -27,19 +27,10 @@ const Navbar = () => {
         <header className="max-w-screen-3xl mx-auto px-4 py-6">
             <nav className='flex justify-between items-center'>
                 {/* Left side */}
-                <div className='flex items-center md:gap-16 gap-4'>
+                <div className="relative sm:w-72 w-40 space-x-2">
                     <Link to="/">
-                        <HiBars3CenterLeft className='w-7 h-7' />
+                        <img src="/BOOK BAZAAR.png" alt="Book Bazaar Logo" className="h-20 w-20 object-contain" />
                     </Link>
-                    {/* Search bar */}
-                    <div className='relative sm:w-72 w-40 space-x-2'>
-                        <IoSearchCircle className='absolute inline-block left-3 inset-y-2 w-5 h-5' />
-                        <input
-                            type='text'
-                            placeholder='What are you looking for?'
-                            className='bg-[#EAEAEA] w-full py-1 md:px-8 px-6 rounded-md focus:outline-none'
-                        />
-                    </div>
                 </div>
                 {/* Right side */}
                 <div className="relative flex items-center md:space-x-3 space-x-2">
