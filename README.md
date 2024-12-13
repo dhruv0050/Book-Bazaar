@@ -5,7 +5,7 @@ Book Bazaar is a full-stack web application designed for book enthusiasts to exp
 ## Deployed Links
 
 - **Frontend**: [Book Bazaar Frontend](https://book-bazaar-client.vercel.app/)
-- **Backend**: Deployed on Vercel (URL available upon request).
+- **Backend**: Deployed on Vercel.
 
 ## Features
 
