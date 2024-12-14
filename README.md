@@ -95,9 +95,6 @@ The application will be accessible at `http://localhost:3000` for the frontend a
 - **GET** `/api/cart`: Fetch user cart items.
 - **POST** `/api/cart`: Add a book to the cart.
 
-### Wishlist
-- **GET** `/api/wishlist`: Fetch user wishlist items.
-- **POST** `/api/wishlist`: Add a book to the wishlist.
 
 ## Contributing
 
